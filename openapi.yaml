@@ -10,440 +10,370 @@ info:
 # Path の定義 ------------------------------------------------------------------
 
 paths:
-  /users:
-    post:
-      summary: 'ユーザーを新規作成する.'
-      
-      requestBody:
-        description: '登録したいIDを指定する(必須).'
-        content:
-          application/json:
-            schema:
-              type: 'object'
-              properties:
-                user_id:
-                  $ref: '#/components/schemas/snowflake'
-      
-      responses:
-        201:
-          description: '成功.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/user'
-      
-      tags:
-        - 'users'
-  
-  
-  /users/{user_id}:
-    delete:
-      summary: 'ユーザーを削除する.'
-      
-      parameters:
-        - name: 'user_id'
-          in: 'path'
-          required: true
-          schema:
-            $ref: '#/components/schemas/snowflake'
-      
-      responses:
-        204:
-          description: '成功.'
-    
-      tags:
-        - 'users'
-  
-  
   /tasks:
     post:
-      summary: 'タスクを登録する.'
-      
+      summary: 'タスクを新規作成する.'
+
       requestBody:
-        description: 'タスク情報を指定する(必須).'
         content:
           application/json:
             schema:
-              type: 'object'
-              properties:
-                task_id:
-                  $ref: '#/components/schemas/snowflake'
-                
-                deadline:
-                  $ref: '#/components/schemas/time'
-                
-                title:
-                  $ref: '#/components/schemas/task_title'
-                
-                description:
-                  $ref: '#/components/schemas/task_description'
-      
+              $ref: '#/components/schemas/task_request'
+
       responses:
         201:
           description: '成功.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-      
-      tags:
-        - 'tasks'
-    
-    
-  /tasks/serach:
-    get:
-      summary: 'タスクを検索する.'
-      
-      parameters:
-        - name: 'user_id'
-          description: 'ユーザーIDを指定する.'
-          in: 'query'
-          required: true
-          schema:
-            $ref: '#/components/schemas/snowflake'
-        
-        - name: 'completed'
-          description: '完了を検索する場合 true、未完了を検索する場合 falseを指定.'
-          in: 'query'
-          required: false
-          schema:
-            type: 'boolean'
-        
-        - name: 'from'
-          description: '期限の先頭をUnixTimeで指定する.'
-          in: 'query'
-          required: false
-          schema:
-            $ref: '#/components/schemas/time'
-        
-        - name: 'to'
-          description: '期限の末尾をUnixTimeで指定する.'
-          in: 'query'
-          required: false
-          schema:
-            $ref: '#/components/schemas/time'
-        
-        - name: 'offset'
-          description: '検索結果のうち無視する最初の件数'
-          in: 'query'
-          required: false
-          schema:
-            type: 'integer'
-        
-        - name: 'limit'
-          description: '検索結果のうち取得する最大件数.'
-          in: 'query'
-          required: false
-          schema:
-            type: 'integer'
-        
-      
-      responses:
-        200:
-          description: '成功.'
+                $ref: '#/components/schemas/task_response'
+
+        400:
+          description: '失敗.'
           content:
             application/json:
               schema:
-                type: 'array'
-                items:
-                  $ref: '#/components/schemas/task'
-      
+                $ref: '#/components/schemas/error_response'
+
       tags:
-        - 'tasks'
-                    
-  
+        - 'create'
+
   /tasks/{task_id}:
     get:
       summary: 'タスクを取得する.'
-      
+
       parameters:
         - name: 'task_id'
-          description: 'タスクIDを指定する.'
           in: 'path'
           required: true
           schema:
             $ref: '#/components/schemas/snowflake'
-      
+
       responses:
         200:
           description: '成功.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-      
+                $ref: '#/components/schemas/task_response'
+
+        404:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
       tags:
-        - 'tasks'
-    
+        - 'read'
+
     delete:
       summary: 'タスクを削除する.'
-      
+
       parameters:
         - name: 'task_id'
-          description: 'タスクIDを指定する.'
           in: 'path'
           required: true
           schema:
             $ref: '#/components/schemas/snowflake'
-    
+
       responses:
         204:
           description: '成功.'
-    
+
+        404:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
       tags:
-        - 'tasks'
-    
-    
-  /tasks/{task_id}/completed:
+        - 'delete'
+
+  /tasks/{task_id}/close:
     put:
       summary: 'タスクを完了状態にする.'
+
       parameters:
         - name: 'task_id'
-          description: 'タスクIDを指定する.'
           in: 'path'
           required: true
           schema:
             $ref: '#/components/schemas/snowflake'
-      
+
       responses:
         200:
           description: '成功.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-    
-      tags:
-        - 'tasks'
-    
-    delete:
-      summary: 'タスクを未完了状態にする.'
-      
-      parameters:
-        - name: 'task_id'
-          description: 'タスクIDを指定する.'
-          in: 'path'
-          required: true
-          schema:
-            $ref: '#/components/schemas/snowflake'
-      
-      responses:
-        200:
-          description: '成功.'
+                $ref: '#/components/schemas/task_response'
+
+        404:
+          description: '失敗.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-      
+                $ref: '#/components/schemas/error_response'
+
       tags:
-        - 'tasks'
-  
-  
-  /tasks/{task_id}/deadline:
+        - 'update'
+
+  /tasks/{task_id}/open:
     put:
-      summary: 'タスクの期限を変更する.'
-    
+      summary: 'タスクを未完了状態にする.'
+
       parameters:
         - name: 'task_id'
-          description: 'タスクIDを指定する.'
           in: 'path'
           required: true
           schema:
             $ref: '#/components/schemas/snowflake'
-      
-      requestBody:
-        description: 'タスクの期限を指定する(必須).'
-        content:
-          application/json:
-            schema:
-              type: 'object'
-              properties:
-                deadline:
-                  $ref: '#/components/schemas/time'
-      
+
       responses:
         200:
           description: '成功.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-    
+                $ref: '#/components/schemas/task_response'
+
+        404:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
       tags:
-        - 'tasks'
-  
-  
+        - 'update'
+
   /tasks/{task_id}/title:
     put:
-      summary: 'タスクのタイトルを変更する.'
-    
+      summary: 'タイトルを変更する.'
+
       parameters:
         - name: 'task_id'
-          description: 'タスクIDを指定する.'
           in: 'path'
           required: true
           schema:
             $ref: '#/components/schemas/snowflake'
-      
+
       requestBody:
-        description: 'タスクのタイトルを指定する(必須).'
         content:
           application/json:
             schema:
               type: 'object'
               properties:
                 title:
-                  $ref: '#/components/schemas/task_title'
-      
+                  $ref: '#/components/schemas/title'
+
       responses:
         200:
           description: '成功.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-    
+                $ref: '#/components/schemas/task_response'
+
+        400:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
+        404:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
       tags:
-        - 'tasks'
-  
-  
+        - 'update'
+
   /tasks/{task_id}/description:
     put:
-      summary: 'タスクの説明を変更する.'
-    
+      summary: '説明文を変更する.'
+
       parameters:
         - name: 'task_id'
-          description: 'タスクIDを指定する.'
           in: 'path'
           required: true
           schema:
             $ref: '#/components/schemas/snowflake'
-      
+
       requestBody:
-        description: 'タスクの説明を指定する(必須).'
         content:
           application/json:
             schema:
               type: 'object'
               properties:
                 description:
-                  $ref: '#/components/schemas/task_description'
-      
+                  $ref: '#/components/schemas/description'
+
       responses:
         200:
           description: '成功.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-    
+                $ref: '#/components/schemas/task_response'
+
+        400:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
+        404:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
       tags:
-        - 'tasks'
-  
-  
+        - 'update'
+
   /tasks/{task_id}/children:
     post:
       summary: '子タスクを追加する.'
-    
+
       parameters:
         - name: 'task_id'
-          description: 'タスクIDを指定する.'
           in: 'path'
           required: true
           schema:
             $ref: '#/components/schemas/snowflake'
-      
+
       requestBody:
-        description: '子タスクのIDを指定する(必須).'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/task_request'
+
+      responses:
+        201:
+          description: '成功.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/task_response'
+
+        400:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
+      tags:
+        - 'create'
+
+  /tasks/{task_id}/parent:
+    put:
+      summary: '親を変更する.'
+      description: 'TIPS: 自身を親とすることで親を持たないタスクにできる.'
+
+      parameters:
+          - name: 'task_id'
+            in: 'path'
+            required: true
+            schema:
+              $ref: '#/components/schemas/snowflake'
+
+      requestBody:
         content:
           application/json:
             schema:
               type: 'object'
               properties:
-                task_id:
+                parent_id:
                   $ref: '#/components/schemas/snowflake'
-      
+
       responses:
         200:
           description: '成功.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-    
-      tags:
-        - 'tasks'
-    
-  /tasks/{task_id}/children/{child_task_id}:
-    delete:
-      summary: 'タスクの親子関係を解除する.'
-      
-      parameters:
-        - name: 'task_id'
-          description: '親タスクのIDを指定する.'
-          in: 'path'
-          required: true
-          schema:
-            $ref: '#/components/schemas/snowflake'
-        
-        - name: 'child_task_id'
-          description: '子タスクのIDを指定する.'
-          in: 'path'
-          required: true
-          schema:
-            $ref: '#/components/schemas/snowflake'
-      
-      responses:
-        200:
-          description: '成功.'
+                $ref: '#/components/schemas/task_response'
+
+        400:
+          description: '失敗.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/task'
-      
+                $ref: '#/components/schemas/error_response'
+
+        404:
+          description: '失敗.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
       tags:
-        - 'tasks'
-    
+        - 'update'
+
 
 # 型の定義 ---------------------------------------------------------------------
 
 components:
   schemas:
-  
-    user:
-      description: 'ユーザー情報を表す.'
+
+    task_request:
+      description: 'タスク作成リクエストに使用する.'
       type: 'object'
       properties:
-        id:
-          $ref: '#/components/schemas/snowflake'
-    
-    task:
-      description: 'タスクを表す.'
-      type: 'object'
-      properties:
-        id:
-          $ref: '#/components/schemas/snowflake'
-        
-        author:
-          $ref: '#/components/schemas/snowflake'
-        
-        status:
-          $ref: '#/components/schemas/task_status'
-        
-        deadline:
-          $ref: '#/components/schemas/time'
-        
         title:
-          $ref: '#/components/schemas/task_title'
-        
+          $ref: '#/components/schemas/title'
+
         description:
-          $ref: '#/components/schemas/task_description'
-          
+          $ref: '#/components/schemas/description'
+
         children:
           type: 'array'
           items:
-            $ref: '#/components/schemas/task'
-  
+            $ref: '#/components/schemas/task_request'
+
+    task_response:
+      description: 'タスクのレスポンスを表す.'
+      type: 'object'
+      properties:
+        id:
+          $ref: '#/components/schemas/snowflake'
+
+        is_closed:
+          $ref: '#/components/schemas/is_closed'
+
+        title:
+          $ref: '#/components/schemas/title'
+
+        description:
+          $ref: '#/components/schemas/description'
+
+        children:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/task_response'
+
+    error_response:
+      description: 'エラー情報のレスポンスを表す.'
+      type: 'object'
+      properties:
+        message:
+          $ref: '#/components/schemas/error'
+
+    error:
+      description: 'エラー'
+      type: 'string'
+      example: 'xxxx yyyy failed.'
+
     snowflake:
       description: '各種ID'
       type: 'string'
@@ -451,42 +381,18 @@ components:
       minLength: 16
       maxLength: 16
       example: '0000000000000000'
-  
-    time:
-      description: '時間を表す(Unix Timestamp).'
-      type: 'integer'
-      example: 0000000000
-    
-    task_status:
-      description: 'タスクの状態.'
-      type: 'integer'
-      example: 0
-      enum:
-        - 0 # 未完了
-        - 1 # 完了
-        - 2 # 子タスクが終わっていない(ロック中)
 
-    task_title:
+    is_closed:
+      description: 'タスクが完了ならtrue.'
+      type: 'boolean'
+
+    title:
       description: 'このタスクのタイトル.'
       type: 'string'
       minLength: 1
-      maxLength: 50
-    
-    task_description:
+      maxLength: 100
+
+    description:
       description: 'このタスクの説明.'
       type: 'string'
-      maxLength: 300
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      maxLength: 1000
