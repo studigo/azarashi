@@ -22,7 +22,7 @@ func getBody(request *http.Request, v any) {
 
 // レスポンスに結果を書き込む.
 func response(w http.ResponseWriter, value any, statusCode int) {
-	res, err := json.Marshal(value)
+	res, err := json.MarshalIndent(value, "", "	")
 	if err != nil {
 		E500(w, &http.Request{})
 		return

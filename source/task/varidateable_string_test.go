@@ -2,57 +2,6 @@ package task
 
 import "testing"
 
-func Test_varidateableString_MinLength(t *testing.T) {
-	tests := []struct {
-		name string
-		p    *varidateableString
-		want int
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.p.MinLength(); got != tt.want {
-				t.Errorf("varidateableString.MinLength() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_varidateableString_MaxLength(t *testing.T) {
-	tests := []struct {
-		name string
-		p    *varidateableString
-		want int
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.p.MaxLength(); got != tt.want {
-				t.Errorf("varidateableString.MaxLength() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_varidateableString_Value(t *testing.T) {
-	tests := []struct {
-		name string
-		p    *varidateableString
-		want string
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.p.Value(); got != tt.want {
-				t.Errorf("varidateableString.Value() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_varidateableString_Set(t *testing.T) {
 	type args struct {
 		value string
@@ -63,7 +12,36 @@ func Test_varidateableString_Set(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "正常値.",
+			p: &varidateableString{
+				minLength: 1,
+				maxLength: 1,
+				value:     "a",
+			},
+			args:    args{value: "b"},
+			wantErr: false,
+		},
+		{
+			name: "超過.",
+			p: &varidateableString{
+				minLength: 1,
+				maxLength: 1,
+				value:     "a",
+			},
+			args:    args{value: "bb"},
+			wantErr: true,
+		},
+		{
+			name: "不足.",
+			p: &varidateableString{
+				minLength: 1,
+				maxLength: 1,
+				value:     "a",
+			},
+			args:    args{value: ""},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
