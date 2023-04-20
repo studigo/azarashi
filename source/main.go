@@ -51,6 +51,12 @@ func main() {
 	http.HandleFunc(http.POST, "^/tasks$", endpoints.CreateTask)
 	http.HandleFunc(http.POST, "^/task/[0-9]*/children$", endpoints.AddChild)
 	http.HandleFunc(http.GET, "^/tasks/[0-9]*$", endpoints.GetTask)
+	http.HandleFunc(http.DELETE, "^/tasks/[0-9]*$", endpoints.DeleteTask)
+	http.HandleFunc(http.PUT, "^/tasks/[0-9]*/close$", endpoints.PutClose)
+	http.HandleFunc(http.PUT, "^/tasks/[0-9]*/open$", endpoints.PutOpen)
+	http.HandleFunc(http.PUT, "^/tasks/[0-9]*/title$", endpoints.PutTitle)
+	http.HandleFunc(http.PUT, "^/tasks/[0-9]*/description$", endpoints.PutDescription)
+	http.HandleFunc(http.PUT, "^/tasks/[0-9]*/parent$", endpoints.PutParent)
 
 	// Listenポートを環境変数から設定(環境変数がなければ8080にする).
 	port := os.Getenv("PORT")

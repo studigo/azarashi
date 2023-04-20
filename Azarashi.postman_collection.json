@@ -1,0 +1,201 @@
+{
+	"info": {
+		"_postman_id": "e75e037b-3fd0-4a89-accd-0918385f54fe",
+		"name": "Azarashi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27006990"
+	},
+	"item": [
+		{
+			"name": "tasks",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\":  \"テスト2_fromPostman\",\n    \"description\": \"テスト2_fromPostman\",\n    \"children\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/tasks",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/tasks/{{:task_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tasks",
+						"{{:task_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tasks",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/tasks/{{:task_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tasks",
+						"{{:task_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "close",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/tasks/{{:task_id}}/close",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tasks",
+						"{{:task_id}}",
+						"close"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "open",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/tasks/{{:task_id}}/open",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tasks",
+						"{{:task_id}}",
+						"open"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "title",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"あたらしいタイトル\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/tasks/{{:task_id}}/title",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tasks",
+						"{{:task_id}}",
+						"title"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "description",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"description\": \"あたらしい説明文\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/tasks/{{:task_id}}/description",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tasks",
+						"{{:task_id}}",
+						"description"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "parent",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": ":task_id",
+			"value": "18223762019876864",
+			"type": "string"
+		}
+	]
+}

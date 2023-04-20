@@ -10,14 +10,14 @@ import (
 )
 
 // Bodyを構造体に変換する.
-func getBody(request *http.Request, v any) {
+func getBody(request *http.Request, v any) error {
 	body := request.Body
 	defer body.Close()
 
 	buf := new(bytes.Buffer)
 	io.Copy(buf, body)
 
-	json.Unmarshal(buf.Bytes(), v)
+	return json.Unmarshal(buf.Bytes(), v)
 }
 
 // レスポンスに結果を書き込む.
