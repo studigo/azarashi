@@ -21,14 +21,14 @@ const (
 
 // httpメソッドとコールバック関数を纏めるための構造体.
 type handle struct {
-	method      []httpMethod
+	method      string
 	regexpCache *regexp.Regexp
 	function    func(w http.ResponseWriter, r *http.Request)
 }
 
 // PATHのルーティングを行うための辞書.
 var (
-	routingMap map[string]*handle                           = make(map[string]*handle)
+	routingMap []*handle                                    = []*handle{}
 	e404f      func(w http.ResponseWriter, r *http.Request) = nil
 	e405f      func(w http.ResponseWriter, r *http.Request) = nil
 )
@@ -38,15 +38,13 @@ PATHに対する処理を設定する(?でパスパラメータを指定可能).
 ex) /tasks/?/children ← ? の部分は任意の文字列
 */
 func HandleFunc(method httpMethod, path string, f func(w http.ResponseWriter, r *http.Request)) {
-	if _, ok := routingMap[path]; !ok {
-		routingMap[path] = &handle{
-			method:      []httpMethod{method},
+	routingMap = append(routingMap,
+		&handle{
+			method:      string(method),
 			regexpCache: regexp.MustCompile(path),
 			function:    f,
-		}
-		return
-	}
-	routingMap[path].method = append(routingMap[path].method, method)
+		},
+	)
 }
 
 // 404の時に呼び出す処理を登録する.
@@ -81,21 +79,13 @@ func routing(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		is405 = true
-		index := -1
-		for i, m := range v.method {
-			if string(m) == r.Method {
-				is405 = false
-				index = i
-				break
-			}
+		if v.method != r.Method {
+			is405 = true
+			continue
 		}
 
-		if 0 <= index {
-			v.function(w, r)
-			return
-		}
-
+		v.function(w, r)
+		return
 	}
 
 	// 405 Method Not Allowed.
