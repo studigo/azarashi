@@ -90,11 +90,17 @@ func ChangeParent(target *task.Inner, newParent *task.Inner) error {
 
 	err := db.Transaction(func(tx *gorm.DB) error {
 		dao := target.ToDAO()
+		ids := []int64{}
 		for _, v := range dao {
-			id := v.ID
-			if err := db.Model(&task.DAO{}).Where("id IN ?", id).Updates(v).Error; err != nil {
-				return fmt.Errorf("parent change failed: %s", err)
-			}
+			ids = append(ids, v.ID)
+		}
+		if err := db.Model(&task.DAO{}).Where("id IN ?", ids).Updates(
+			map[string]interface{}{
+				"parent_id": newParent.ID(),
+				"root_id":   newParent.Root().ID(),
+			},
+		).Error; err != nil {
+			return fmt.Errorf("parent change failed: %s", err)
 		}
 		return nil
 	})
